@@ -1,0 +1,14 @@
+config.json
+EndorCore.service
+file.png
+mp4.gif
+servers.db
+servers.db-shm
+servers.db-wal
+
+**/__pycache__/
+/build/
+/Logs/
+/TXT files/
+/Databases/
+/Moudles/discord.log
