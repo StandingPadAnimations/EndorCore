@@ -41,7 +41,7 @@ class Help(commands.Cog):
         await ctx.message.channel.send(embed=myembed)  
         
     @slash_command(name='mod-help')
-    @permissions.permission(manage_messages=True)
+    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
     async def modhelp(self, ctx):
         myembed = discord.Embed (title="Help", color=discord.Colour.dark_blue())
         myembed.add_field(name="mute <member>", value= "Mutes people", inline=False) 

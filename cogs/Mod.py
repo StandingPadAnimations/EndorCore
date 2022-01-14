@@ -1,14 +1,11 @@
 import discord
 from discord import permissions 
 from discord.ext import commands
+from discord.commands import slash_command, permissions
 from typing import Optional, Union
-
-from discord.permissions import permission_alias
-
 
 
 class Mod(commands.Cog):
-    
     def __init__(self, client):
         
         self.client = client
@@ -21,10 +18,9 @@ class Mod(commands.Cog):
             return ctx.author.id 
     
     
-    @commands.command(name='kick', pass_ctx= True)
-    @commands.has_permissions(kick_members=True)
+    @slash_command(name='kick')
+    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
     async def kick(self, ctx, member: discord.Member, *, reason=None):
-        
         if reason == None:
             reason = "For being a -----" 
 
@@ -56,8 +52,8 @@ class Mod(commands.Cog):
                 
         
         
-    @commands.command(name='ban', pass_ctx=True)
-    @commands.has_permissions(ban_members=True)
+    @slash_command(name='ban')
+    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
     async def ban(self, ctx, member : Union[int, discord.Member], *, reason=None):
         if reason == None:
             reason = "For being a -----" 
@@ -104,8 +100,8 @@ class Mod(commands.Cog):
             myembed.add_field(name=f'{member} has been banned', value= f'Reason: {reason}', inline=False)
             await ctx.send(embed=myembed)
         
-    @commands.command(name='add-role', pass_ctx=True)
-    @commands.has_permissions(manage_roles=True)
+    @slash_command(name='add-role')
+    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
     async def role_add(self, ctx, member: discord.Member, role: discord.Role):
         
         if role > ctx.author.top_role:
@@ -120,8 +116,8 @@ class Mod(commands.Cog):
             myembed.add_field(name="Role added", value= f'{member} now has {role} added', inline=False)
             await ctx.send(embed=myembed)
 
-    @commands.command(name='remove-role', pass_ctx=True)
-    @commands.has_permissions(manage_roles=True)
+    @slash_command(name='remove-role')
+    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
     async def role_remove(self, ctx, member: discord.Member, role: discord.Role):
         
         if role > ctx.author.top_role:
@@ -136,10 +132,9 @@ class Mod(commands.Cog):
             myembed.add_field(name="Role removed", value= f'{member} now has {role} removed', inline=False)
             await ctx.send(embed=myembed)
         
-    @commands.command(name='unban', pass_ctx=True)
-    @commands.has_permissions(ban_members=True)
+    @slash_command(name='unban')
+    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
     async def unban(self, ctx, *, member):
-
         member_user = discord.Object(id=member)
         try:
             await ctx.guild.unban(member_user)
@@ -147,17 +142,16 @@ class Mod(commands.Cog):
         except discord.NotFound:
             await ctx.send(f"{member} does not exist!")
             
-    @commands.command(name='bans', pass_ctx=True)
-    @commands.has_permissions(ban_members=True)
+    @slash_command(name='bans')
+    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
     async def bans_guild(self, ctx):
         ban_list = []
         async for entry in ctx.guild.audit_logs(action=discord.AuditLogAction.ban):
             ban_list.append(f'{entry.user} banned {entry.target} at {entry.created_at} with reason {entry.reason}')
         await ctx.send("\n".join(ban_list))
         
-    @commands.command(name='mute', pass_ctx= True,)
-    @commands.has_permissions(kick_members=True)
-
+    @slash_command(name='mute',)
+    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
     async def mute(self, ctx, member: discord.Member):
 
         guild = ctx.guild 
@@ -176,9 +170,8 @@ class Mod(commands.Cog):
         await ctx.send(embed=myembed)
         
         
-    @commands.command(name='unmute', pass_ctx= True)
-    @commands.has_permissions(kick_members=True)
-
+    @slash_command(name='unmute')
+    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
     async def unmute(self, ctx, member: discord.Member):
         
         muted = discord.utils.get(ctx.guild.roles, name= "Muted")
@@ -191,9 +184,8 @@ class Mod(commands.Cog):
         await ctx.send(embed=myembed)
         
         
-    @commands.command(name='purge', pass_ctx= True)
-    @commands.has_permissions(manage_messages=True)
-
+    @slash_command(name='purge')
+    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
     async def purge(self, ctx, amount=1):
         await ctx.channel.purge(limit=amount + 1)
 
@@ -203,9 +195,8 @@ class Mod(commands.Cog):
         await ctx.send(embed=myembed)
         
         
-    @commands.command(name='strike', pass_ctx= True)
-    @commands.has_permissions(manage_messages=True)
-
+    @slash_command(name='strike')
+    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
     async def strike(self, ctx, member : discord.Member):
         
         first_strike = 1
@@ -249,9 +240,8 @@ class Mod(commands.Cog):
             await cursor.close()
             
         
-    @commands.command(name='pardon', pass_ctx= True)
-    @commands.has_permissions(manage_messages=True)
-
+    @slash_command(name='pardon')
+    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
     async def pardon(self, ctx, member : discord.Member, *, strikes : Optional[int]):
         
         if strikes == None:
@@ -279,8 +269,8 @@ class Mod(commands.Cog):
         await cursor.close()
         
         
-    @commands.command(name='infractions')
-    @commands.has_permissions(manage_messages=True)
+    @slash_command(name='infractions')
+    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
     async def configset(self, ctx, member : discord.Member):
         
         cursor = await self.client.db.cursor()
