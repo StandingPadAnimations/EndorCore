@@ -54,7 +54,7 @@ class Mod(commands.Cog):
         
     @slash_command(name='ban')
     @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
-    async def ban(self, ctx, member : Union[int, discord.Member], *, reason=None):
+    async def ban(self, ctx, member, *, reason=None):
         if reason == None:
             reason = "For being a -----" 
         
