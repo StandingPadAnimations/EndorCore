@@ -20,7 +20,7 @@ class Reddit(commands.Cog):
         password = data["REDDIT_PASSWORD"], user_agent = data["USER_AGENT"])
         self.make_memes.start()
         
-    @tasks.loop(minutes=5)
+    @tasks.loop(minutes=30)
     async def make_memes(self):
         self.meme_subs = []
         self.sao_subs = []
@@ -65,9 +65,6 @@ class Reddit(commands.Cog):
         
     @slash_command(name='cat')
     async def cat(self, ctx):
-        async with ctx.typing():
-            await asyncio.sleep(0.5)
-        
         random_sub = random.choice(self.cat_subs)
         name = random_sub.title 
         url = random_sub.url 
@@ -77,9 +74,6 @@ class Reddit(commands.Cog):
         
     @slash_command(name='anime')
     async def anime(self, ctx):
-        async with ctx.typing():
-            await asyncio.sleep(0.5)
-        
         random_sub = random.choice(self.anime_subs)
         name = random_sub.title 
         url = random_sub.url 
@@ -89,9 +83,6 @@ class Reddit(commands.Cog):
         
     @slash_command(name='meme')
     async def meme(self, ctx):
-        async with ctx.typing():
-            await asyncio.sleep(0.5)
-
         random_sub = random.choice(self.meme_subs)
         name = random_sub.title 
         url = random_sub.url 
@@ -101,9 +92,6 @@ class Reddit(commands.Cog):
         
     @slash_command(name='blend')
     async def blend(self, ctx):
-        async with ctx.typing():
-            await asyncio.sleep(0.5)
-            
         random_sub = random.choice(self.blend_subs)
         name = random_sub.title 
         url = random_sub.url 
@@ -113,9 +101,6 @@ class Reddit(commands.Cog):
 
     @slash_command(name='sao', description= "Cause I'm a huge fan of Sword Art Online")
     async def sao(self, ctx):
-        async with ctx.typing():
-            await asyncio.sleep(0.5)
-
         random_sub = random.choice(self.sao_subs)
         name = random_sub.title 
         url = random_sub.url 
@@ -125,9 +110,6 @@ class Reddit(commands.Cog):
         
     @slash_command(name='fine_meme')
     async def fine_meme(self, ctx):
-        async with ctx.typing():
-            await asyncio.sleep(0.5)
-
         random_sub = random.choice(self.fine_collection_of_memes)
         myembed = discord.Embed (title = "from Standing's favorite meme collection")
         myembed.set_image(url = random_sub)
