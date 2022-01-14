@@ -27,13 +27,13 @@ class Mod(commands.Cog):
         if member.top_role > ctx.author.top_role:
             myembed = discord.Embed ()
             myembed.add_field(name=f'{member} is above you', value= "You can only kick people below your role", inline=False)
-            await ctx.send(embed=myembed)         
+            await ctx.respond(embed=myembed)         
             return 
         
         if member.top_role == ctx.author.top_role:
             myembed = discord.Embed ()
             myembed.add_field(name=f'{member} is equal you', value= "You can only kick people below your role", inline=False)
-            await ctx.send(embed=myembed)         
+            await ctx.respond(embed=myembed)         
             return
         
         
@@ -41,14 +41,14 @@ class Mod(commands.Cog):
         if member.guild_permissions.kick_members == True:
             myembed = discord.Embed ()
             myembed.add_field(name="Kick Permission Detected", value= "Cannot kick a user with moderator perms!", inline=False)
-            return await ctx.send(embed=myembed)
+            return await ctx.respond(embed=myembed)
         
         else:
             myembed = discord.Embed ()
             myembed.add_field(name=f'{member} has been kicked', value= f'Reason: {reason}', inline=False)
-            await ctx.member.send(embed=myembed)
+            await ctx.member.respond(embed=myembed)
             await member.kick(reason=reason)
-            await ctx.send(embed=myembed)
+            await ctx.respond(embed=myembed)
                 
         
         
@@ -66,39 +66,39 @@ class Mod(commands.Cog):
                 if member.top_role > ctx.author.top_role:
                     myembed = discord.Embed ()
                     myembed.add_field(name=f'{member} is above you', value= "You can only ban people below your role", inline=False)
-                    await ctx.send(embed=myembed)         
+                    await ctx.respond(embed=myembed)         
                     return 
                 
                 elif member.top_role == ctx.author.top_role:
                     myembed = discord.Embed ()
                     myembed.add_field(name=f'{member} is equal you', value= "You can only ban people below your role", inline=False)
-                    await ctx.send(embed=myembed)         
+                    await ctx.respond(embed=myembed)         
                     return
                 
                 elif member.guild_permissions.ban_members == True:
                     myembed = discord.Embed ()
                     myembed.add_field(name="Ban Permission Detected", value= "Cannot ban a user with moderator perms!", inline=False)
-                    return await ctx.send(embed=myembed)
+                    return await ctx.respond(embed=myembed)
             
                 else:
                     myembed = discord.Embed ()
                     myembed.add_field(name=f'{member} has been banned', value= f'Reason: {reason}', inline=False)
-                    await ctx.member.send(embed=myembed)
+                    await ctx.member.respond(embed=myembed)
                     await member.ban(reason=reason)
-                    await ctx.send(embed=myembed)
+                    await ctx.respond(embed=myembed)
                     
             else:
                 user = await self.client.fetch_user(member.id)
                 await ctx.guild.ban(user, reason=reason, delete_message_days=0)
                 myembed = discord.Embed ()
                 myembed.add_field(name=f'{member} has been banned', value= f'Reason: {reason}', inline=False)
-                await ctx.send(embed=myembed)
+                await ctx.respond(embed=myembed)
         else:
             user = await self.client.fetch_user(member)
             await ctx.guild.ban(user, reason=reason, delete_message_days=0)
             myembed = discord.Embed ()
             myembed.add_field(name=f'{member} has been banned', value= f'Reason: {reason}', inline=False)
-            await ctx.send(embed=myembed)
+            await ctx.respond(embed=myembed)
         
     @slash_command(name='add-role')
     @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
@@ -107,14 +107,14 @@ class Mod(commands.Cog):
         if role > ctx.author.top_role:
             myembed = discord.Embed ()
             myembed.add_field(name="Role mentioned too high", value= "You can only add roles below your role", inline=False)
-            await ctx.send(embed=myembed)         
+            await ctx.respond(embed=myembed)         
             return 
         
         else:
             await member.add_roles(role)
             myembed = discord.Embed ()
             myembed.add_field(name="Role added", value= f'{member} now has {role} added', inline=False)
-            await ctx.send(embed=myembed)
+            await ctx.respond(embed=myembed)
 
     @slash_command(name='remove-role')
     @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
@@ -123,14 +123,14 @@ class Mod(commands.Cog):
         if role > ctx.author.top_role:
             myembed = discord.Embed ()
             myembed.add_field(name="Role mentioned too high", value= "You can only remove roles below your role", inline=False)
-            await ctx.send(embed=myembed)         
+            await ctx.respond(embed=myembed)         
             return
         
         else:
             await member.remove_roles(role)
             myembed = discord.Embed ()
             myembed.add_field(name="Role removed", value= f'{member} now has {role} removed', inline=False)
-            await ctx.send(embed=myembed)
+            await ctx.respond(embed=myembed)
         
     @slash_command(name='unban')
     @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
@@ -138,9 +138,9 @@ class Mod(commands.Cog):
         member_user = discord.Object(id=member)
         try:
             await ctx.guild.unban(member_user)
-            await ctx.send(f"Unbanned {member_user}")
+            await ctx.respond(f"Unbanned {member_user}")
         except discord.NotFound:
-            await ctx.send(f"{member} does not exist!")
+            await ctx.respond(f"{member} does not exist!")
             
     @slash_command(name='bans')
     @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
@@ -148,7 +148,7 @@ class Mod(commands.Cog):
         ban_list = []
         async for entry in ctx.guild.audit_logs(action=discord.AuditLogAction.ban):
             ban_list.append(f'{entry.user} banned {entry.target} at {entry.created_at} with reason {entry.reason}')
-        await ctx.send("\n".join(ban_list))
+        await ctx.respond("\n".join(ban_list))
         
     @slash_command(name='mute',)
     @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
@@ -159,7 +159,7 @@ class Mod(commands.Cog):
         myembed = discord.Embed ()
 
         if not muted:
-            perms =  discord.Permissions(speak=False, send_messages=False)
+            perms =  discord.Permissions(speak=False, respond_messages=False)
             muted = await guild.create_role(name= "Muted", permissions= perms)
             await muted.edit(position=1)
 
@@ -167,7 +167,7 @@ class Mod(commands.Cog):
         myembed.add_field(name= "Muted", value= f'{member} has been muted', inline=False)
 
         await member.add_roles(muted)
-        await ctx.send(embed=myembed)
+        await ctx.respond(embed=myembed)
         
         
     @slash_command(name='unmute')
@@ -181,7 +181,7 @@ class Mod(commands.Cog):
         myembed.add_field(name= "Unmuted", value= f'{member} has been unmuted', inline=False)
 
         await member.remove_roles(muted)
-        await ctx.send(embed=myembed)
+        await ctx.respond(embed=myembed)
         
         
     @slash_command(name='purge')
@@ -192,7 +192,7 @@ class Mod(commands.Cog):
         myembed = discord.Embed ()
         myembed.add_field(name= "Purged", value= f'{amount} messages has been deleted', inline=False)
 
-        await ctx.send(embed=myembed)
+        await ctx.respond(embed=myembed)
         
         
     @slash_command(name='strike')
@@ -217,7 +217,7 @@ class Mod(commands.Cog):
                 
             sql = f"INSERT INTO Strikes(Guild_ID, User_ID, Strikes_Have) VALUES({ctx.guild.id}, {member.id}, {first_strike})"
             
-            await ctx.message.channel.send(f"Striked {member}")
+            await ctx.respond(f"Striked {member}")
             
             await cursor.execute(sql)
             await self.client.db.commit()
@@ -225,7 +225,7 @@ class Mod(commands.Cog):
             
             
         elif user_result["Strikes_Have"] == server_result["MAX_STRIKES"]:
-                await ctx.message.channel.send(f"{member} has the max amount of stirkes specified by the server")
+                await ctx.respond(f"{member} has the max amount of stirkes specified by the server")
 
         else:
             
@@ -233,7 +233,7 @@ class Mod(commands.Cog):
                 
             sql = f"UPDATE Strikes SET Strikes_Have = Strikes_Have + 1 where Guild_ID = {ctx.guild.id} AND User_ID = {member.id}"
             
-            await ctx.message.channel.send(f"Striked {member}")
+            await ctx.respond(f"Striked {member}")
             
             await cursor.execute(sql)
             await self.client.db.commit()
@@ -249,7 +249,7 @@ class Mod(commands.Cog):
             cursor = await self.client.db.cursor()
                 
             sql = f"DELETE FROM Strikes WHERE Guild_ID = {ctx.guild.id} AND User_ID = {member.id}"
-            await ctx.message.channel.send(f"Pardoned {member} of all strikes")
+            await ctx.respond(f"Pardoned {member} of all strikes")
             
         else:
             
@@ -258,10 +258,10 @@ class Mod(commands.Cog):
             sql = f"UPDATE Strikes SET Strikes_Have = Strikes_Have - {strikes} where Guild_ID = {ctx.guild.id} AND User_ID = {member.id}"
             
             if strikes == 1:
-                await ctx.message.channel.send(f"Pardoned {member} of {strikes} strike")
+                await ctx.respond(f"Pardoned {member} of {strikes} strike")
                 
             else:
-                await ctx.message.channel.send(f"Pardoned {member} of {strikes} strikes")
+                await ctx.respond(f"Pardoned {member} of {strikes} strikes")
                 
                 
         await cursor.execute(sql)
@@ -281,7 +281,7 @@ class Mod(commands.Cog):
         if result is None:
             myembed = discord.Embed ()
             myembed.add_field(name=f"No strikes for {member}", value= "Good Job", inline=False)
-            await ctx.message.channel.send(embed=myembed)
+            await ctx.respond(embed=myembed)
             
         else:
             infractions = result["Strikes_Have"]
@@ -289,7 +289,7 @@ class Mod(commands.Cog):
             myembed.add_field(name=f"Infractions for {member}", value= f"{infractions}", inline=False)
             
             
-            await ctx.message.channel.send(embed=myembed)
+            await ctx.respond(embed=myembed)
 
 
 def setup(client):

@@ -38,7 +38,7 @@ class Help(commands.Cog):
         myembed.add_field(name="prime-list <number>", value= "shows primes in the amount specified", inline=False)
         myembed.add_field(name="primes <number 1> <number 2>", value= "shows how many primes there are between numbers", inline=False)
         myembed.add_field(name="For more info, please visit the wiki:", value= "https://sites.google.com/view/standingpadanimations/Development-Stuff/endorcore-wiki?authuser=0", inline=False)
-        await ctx.message.channel.send(embed=myembed)  
+        await ctx.respond(embed=myembed)  
         
     @slash_command(name='mod-help')
     @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
@@ -55,7 +55,7 @@ class Help(commands.Cog):
         myembed.add_field(name="strike <user>", value= "adds one strike", inline=False)
         myembed.add_field(name="pardon <user> <number(if no number is specified, the user is pardoned of all strikes)", value= "removes strikes", inline=False)
         myembed.add_field(name="infractions <user>", value= "shows infractions", inline=False)
-        await ctx.message.channel.send(embed=myembed)
+        await ctx.respond(embed=myembed)
         
     @slash_command(name='config-help')
     @permissions.is_owner()
@@ -72,7 +72,7 @@ class Help(commands.Cog):
         myembed.add_field(name="**EXPERIMENTIAL**", value= "Experimential Features, use at risk!", inline=False)
         myembed.add_field(name="disable-image", value= "disables the image filter", inline=False)
         myembed.add_field(name="enable-image", value= "enables the image filter", inline=False)
-        await ctx.message.channel.send(embed=myembed)
+        await ctx.respond(embed=myembed)
         
     @commands.command(name='config-settings')
     @permissions.is_owner()
@@ -116,7 +116,7 @@ class Help(commands.Cog):
         myembed.add_field(name=f"Max Strikes", value= f"{strike}", inline=False)
         myembed.add_field(name=f"Mood Responses", value= f"{mood_embed}", inline=False)
         myembed.add_field(name=f"MEE6 Roast Channel", value= f"{mee6_embed}", inline=False)
-        await ctx.message.channel.send(embed=myembed)
+        await ctx.respond(embed=myembed)
 
 
 def setup(client):
