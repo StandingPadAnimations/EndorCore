@@ -4,9 +4,7 @@ import random
 
 
 class Msg_Check(commands.Cog):
-    
     def __init__(self, client):
-        
         self.client = client 
         
     @commands.Cog.listener('on_message')
