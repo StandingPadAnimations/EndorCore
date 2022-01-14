@@ -1,6 +1,6 @@
 import discord 
 from discord.ext import commands
-
+from discord.commands import slash_command, permissions
 
 class Help(commands.Cog):
     
@@ -17,11 +17,9 @@ class Help(commands.Cog):
             return ctx.author.id
         
         
-    @commands.command(name='help')
+    @slash_command(name='help')
     async def help(self, ctx):
-    
         myembed = discord.Embed (title="Help", color=0x00ff00)
-
         myembed.add_field(name="shut-up", value= "Tells bot to shut up", inline=False) 
         myembed.add_field(name="hi", value= "Says hi", inline=False)
         myembed.add_field(name="gn", value= "Says gn", inline=False)
@@ -40,18 +38,12 @@ class Help(commands.Cog):
         myembed.add_field(name="prime-list <number>", value= "shows primes in the amount specified", inline=False)
         myembed.add_field(name="primes <number 1> <number 2>", value= "shows how many primes there are between numbers", inline=False)
         myembed.add_field(name="For more info, please visit the wiki:", value= "https://sites.google.com/view/standingpadanimations/Development-Stuff/endorcore-wiki?authuser=0", inline=False)
-
         await ctx.message.channel.send(embed=myembed)  
         
-        
-        
-        
-    @commands.command(name='mod-help')
-    @commands.has_permissions(manage_messages=True)
+    @slash_command(name='mod-help')
+    @permissions.permission(manage_messages=True)
     async def modhelp(self, ctx):
-
         myembed = discord.Embed (title="Help", color=discord.Colour.dark_blue())
-
         myembed.add_field(name="mute <member>", value= "Mutes people", inline=False) 
         myembed.add_field(name="unmute <member>", value= "Unmutes people", inline=False)
         myembed.add_field(name="kick <member> <reason>", value= "Kicks people", inline=False)
@@ -63,19 +55,12 @@ class Help(commands.Cog):
         myembed.add_field(name="strike <user>", value= "adds one strike", inline=False)
         myembed.add_field(name="pardon <user> <number(if no number is specified, the user is pardoned of all strikes)", value= "removes strikes", inline=False)
         myembed.add_field(name="infractions <user>", value= "shows infractions", inline=False)
-        
-        
-
         await ctx.message.channel.send(embed=myembed)
         
-        
-    @commands.command(name='config-help')
-    @commands.has_permissions(administrator=True)
+    @slash_command(name='config-help')
+    @permissions.is_owner()
     async def confighelp(self, ctx):
-
         myembed = discord.Embed (title="Help", color=discord.Colour.dark_blue())
-
-        
         myembed.add_field(name="disable-del", value= "disables the on message delete command", inline=False)
         myembed.add_field(name="enable-del", value= "enables the on message delete command", inline=False)
         myembed.add_field(name="disable-moods", value= "disables the mood responses", inline=False)
@@ -87,45 +72,26 @@ class Help(commands.Cog):
         myembed.add_field(name="**EXPERIMENTIAL**", value= "Experimential Features, use at risk!", inline=False)
         myembed.add_field(name="disable-image", value= "disables the image filter", inline=False)
         myembed.add_field(name="enable-image", value= "enables the image filter", inline=False)
-        
-
         await ctx.message.channel.send(embed=myembed)
         
     @commands.command(name='config-settings')
-    @commands.has_permissions(administrator=True)
+    @permissions.is_owner()
     async def configset(self, ctx):
-        
         cursor = await self.client.db.cursor()
         await cursor.execute(f"SELECT CHAT_FILTER_LEVEL FROM Servers WHERE Guild_ID = {ctx.guild.id}")
         result = await cursor.fetchone()
-            
         chat_filter = result["CHAT_FILTER_LEVEL"]
-        
-        
-        cursor = await self.client.db.cursor()
         await cursor.execute(f"SELECT ENABLE_OR_DISABLE_ON_MSG_DELETE FROM Servers WHERE Guild_ID = {ctx.guild.id}")
         result = await cursor.fetchone()
-        
         msg_del = result["ENABLE_OR_DISABLE_ON_MSG_DELETE"]
-        
-        cursor = await self.client.db.cursor()
         await cursor.execute(f"SELECT MAX_STRIKES FROM Servers WHERE Guild_ID = {ctx.guild.id}")
         result = await cursor.fetchone()
-        
         strike = result["MAX_STRIKES"]  
-        
-        
-        cursor = await self.client.db.cursor()
         await cursor.execute(f"SELECT ENABLE_OR_DISABLE_ENDOR_CORE_MOOD_RESPONSES FROM Servers WHERE Guild_ID = {ctx.guild.id}")
         result = await cursor.fetchone()
-        
         mood_respond = result["ENABLE_OR_DISABLE_ENDOR_CORE_MOOD_RESPONSES"] 
-        
-        
-        cursor = await self.client.db.cursor()
         await cursor.execute(f"SELECT MEE6_CHANNEL_LOCK FROM Servers WHERE Guild_ID = {ctx.guild.id}")
         result = await cursor.fetchone()
-        
         mee6 = result["MEE6_CHANNEL_LOCK"]
         
         if msg_del == 0:
@@ -150,10 +116,7 @@ class Help(commands.Cog):
         myembed.add_field(name=f"Max Strikes", value= f"{strike}", inline=False)
         myembed.add_field(name=f"Mood Responses", value= f"{mood_embed}", inline=False)
         myembed.add_field(name=f"MEE6 Roast Channel", value= f"{mee6_embed}", inline=False)
-        
         await ctx.message.channel.send(embed=myembed)
-        
-
 
 
 def setup(client):

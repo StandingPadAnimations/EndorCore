@@ -9,7 +9,6 @@ from datetime import datetime
 import discord
 from discord.ext import commands, tasks
 import Moudles.asqlite as asqlite
-from discord_slash import SlashCommand
 
 with open(r"config.json") as f:
     data = json.load(f)
@@ -39,7 +38,6 @@ intents.members = True
 intents.presences = True 
 intents.messages = True 
 client = commands.Bot(command_prefix ='>', intents=intents)
-slash = SlashCommand(client, sync_commands=True, sync_on_cog_reload=True)
 client.mood = None
 client.mood_time = 0
 client.revenge_mode = False 
@@ -63,7 +61,6 @@ handler = logging.FileHandler(filename='Moudles/discord.log', encoding='utf-8', 
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-client.load_extension('jishaku')
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')

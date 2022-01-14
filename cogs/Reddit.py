@@ -1,5 +1,6 @@
 import discord 
 from discord.ext import commands, tasks 
+from discord.commands import slash_command, permissions
 import asyncpraw
 import json 
 import asyncio
@@ -13,22 +14,16 @@ with open(r"config.json") as f:
 
 
 class Reddit(commands.Cog):
-    
     def __init__(self, client):
-        
         self.client = client 
-        
         self.reddit = asyncpraw.Reddit(client_id = data["ID"], client_secret = data["SECRET"], username = data["REDDIT_USERNAME"], 
-password = data["REDDIT_PASSWORD"], user_agent = data["USER_AGENT"])
-        
-        
+        password = data["REDDIT_PASSWORD"], user_agent = data["USER_AGENT"])
         self.make_memes.start()
-        
         
     @tasks.loop(minutes=5)
     async def make_memes(self):
-        
         self.meme_subs = []
+        self.sao_subs = []
         self.cat_subs = []
         self.blend_subs = []
         self.anime_subs = []
@@ -36,11 +31,13 @@ password = data["REDDIT_PASSWORD"], user_agent = data["USER_AGENT"])
         
         meme_subreddit = await self.reddit.subreddit("memes")
         cat_subreddit = await self.reddit.subreddit("cats")
+        sao_subreddit = await self.reddit.subreddit("swordartonlinememes")
         blender_subreddit  = await self.reddit.subreddit("blender")
         anime_subreddit = await self.reddit.subreddit("Animememes")
         
         meme_hot = meme_subreddit.hot(limit = 1000)
         cat_hot = cat_subreddit.hot(limit = 1000)
+        sao_hot = sao_subreddit.hot(limit = 1000)
         blend_hot = blender_subreddit.hot(limit = 1000)
         anime_hot = anime_subreddit.hot(limit = 1000)
         
@@ -55,7 +52,10 @@ password = data["REDDIT_PASSWORD"], user_agent = data["USER_AGENT"])
             
         async for submission in anime_hot:
             self.anime_subs.append(submission)
-    
+
+        async for submission in sao_hot:
+            self.sao_subs.append(submission)
+
     async def cog_check(self, ctx):
         cursor = await self.client.db.cursor()
         await cursor.execute("SELECT REASON FROM Blacklist WHERE User_ID = ?", (ctx.author.id,))
@@ -63,80 +63,74 @@ password = data["REDDIT_PASSWORD"], user_agent = data["USER_AGENT"])
         if result is None:
             return ctx.author.id
         
-        
-    
-    @commands.command(name='cat')
+    @slash_command(name='cat')
     async def cat(self, ctx):
         async with ctx.typing():
             await asyncio.sleep(0.5)
         
-        
         random_sub = random.choice(self.cat_subs)
-    
         name = random_sub.title 
         url = random_sub.url 
-        
         myembed = discord.Embed (title = name, url = url)
         myembed.set_image(url = url)
-
         await ctx.send(embed=myembed)
         
-    @commands.command(name='anime')
+    @slash_command(name='anime')
     async def anime(self, ctx):
         async with ctx.typing():
             await asyncio.sleep(0.5)
         
         random_sub = random.choice(self.anime_subs)
-    
         name = random_sub.title 
         url = random_sub.url 
-        
         myembed = discord.Embed (title = name, url = url)
         myembed.set_image(url = url)
-
         await ctx.send(embed=myembed)
         
-    @commands.command(name='meme')
+    @slash_command(name='meme')
     async def meme(self, ctx):
         async with ctx.typing():
             await asyncio.sleep(0.5)
 
         random_sub = random.choice(self.meme_subs)
-    
         name = random_sub.title 
         url = random_sub.url 
-        
         myembed = discord.Embed (title = name, url = url)
         myembed.set_image(url = url)
-
         await ctx.send(embed=myembed)
         
-        
-    @commands.command(name='blend')
+    @slash_command(name='blend')
     async def blend(self, ctx):
         async with ctx.typing():
             await asyncio.sleep(0.5)
             
         random_sub = random.choice(self.blend_subs)
-    
         name = random_sub.title 
         url = random_sub.url 
-        
         myembed = discord.Embed (title = name, url = url)
         myembed.set_image(url = url)
-
         await ctx.send(embed=myembed)
-        
-    @commands.command(name='standing')
-    async def standings_fine_collecton_of_memes(self, ctx):
+
+    @slash_command(name='sao', description= "Cause I'm a huge fan of Sword Art Online")
+    async def sao(self, ctx):
         async with ctx.typing():
             await asyncio.sleep(0.5)
-            
-        random_sub = random.choice(self.fine_collection_of_memes)
+
+        random_sub = random.choice(self.sao_subs)
+        name = random_sub.title 
+        url = random_sub.url 
+        myembed = discord.Embed (title = name, url = url)
+        myembed.set_image(url = url)
+        await ctx.send(embed=myembed)
         
+    @slash_command(name='fine_meme')
+    async def fine_meme(self, ctx):
+        async with ctx.typing():
+            await asyncio.sleep(0.5)
+
+        random_sub = random.choice(self.fine_collection_of_memes)
         myembed = discord.Embed (title = "from Standing's favorite meme collection")
         myembed.set_image(url = random_sub)
-
         await ctx.send(embed=myembed)
 
         
