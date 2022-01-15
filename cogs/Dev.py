@@ -18,11 +18,10 @@ loop = asyncio.get_event_loop()
         
         
 class Dev(commands.Cog):
-    
     def __init__(self, client):
         self.client = client 
     
-    @slash_command(name='dev')
+    @slash_command(name='dev', guild_ids=[760302595808952352])
     @permissions.permission(user_id=DEV_ID, permission=True)
     async def dev(self, ctx):
         myembed = discord.Embed (title= "Dev Portal", description= f'Welcome back {ctx.author}', color= discord.Colour.blurple())
@@ -39,7 +38,7 @@ class Dev(commands.Cog):
         
         await ctx.respond(embed=myembed)
 
-    @slash_command(name='dev-purge')
+    @slash_command(name='dev-purge', guild_ids=[760302595808952352])
     @permissions.permission(user_id=DEV_ID, permission=True)
     async def dev_purge(self, ctx, amount=1):
         await ctx.channel.purge(limit=amount + 1)
@@ -48,7 +47,7 @@ class Dev(commands.Cog):
         await ctx.respond(embed=myembed)
 
 
-    @slash_command(name='kill')
+    @slash_command(name='kill', guild_ids=[760302595808952352])
     @permissions.permission(user_id=DEV_ID, permission=True)
     async def shutdown(self, ctx):
         print("shutdown")
@@ -59,7 +58,7 @@ class Dev(commands.Cog):
         await ctx.bot.logout()
         os.popen("sudo systemctl stop EndorCore_service.service").readline()
     
-    @slash_command(name='w-kill')
+    @slash_command(name='w-kill', guild_ids=[760302595808952352])
     @permissions.permission(user_id=DEV_ID, permission=True)
     async def w_shutdown(self, ctx):
         print("shutdown")
@@ -70,18 +69,18 @@ class Dev(commands.Cog):
         await ctx.bot.logout()   
 
         
-    @slash_command(name='pinge')
+    @slash_command(name='pinge', guild_ids=[760302595808952352])
     @permissions.permission(user_id=DEV_ID, permission=True)
     async def pinge(self, ctx):
         await ctx.respond("@everyone")
         
-    @slash_command(name='pingh')
+    @slash_command(name='pingh', guild_ids=[760302595808952352])
     @permissions.permission(user_id=DEV_ID, permission=True)
     async def pinge(self, ctx):
         await ctx.respond("@here")
         
 
-    @slash_command(name='revenge-on')
+    @slash_command(name='revenge-on', guild_ids=[760302595808952352])
     @permissions.permission(user_id=DEV_ID, permission=True)
     async def revenge_on(self, ctx, member : discord.Member, *, args=None):
         if member == None:
@@ -98,7 +97,7 @@ class Dev(commands.Cog):
                 self.client.revenge_del = True 
                 await ctx.respond("Revenge Mode Enabled")
         
-    @slash_command(name='revenge-off')
+    @slash_command(name='revenge-off', guild_ids=[760302595808952352])
     @permissions.permission(user_id=DEV_ID, permission=True)
     async def revenge_off(self, ctx):
         self.client.revenge_mode = False
@@ -106,47 +105,47 @@ class Dev(commands.Cog):
         self.client.revenge_del  = False 
         await ctx.respond("Revenge Mode Disabled")
         
-    @slash_command(name='uptime')
+    @slash_command(name='uptime', guild_ids=[760302595808952352])
     @permissions.permission(user_id=DEV_ID, permission=True)
     async def uptime(self, ctx):
         delta_uptime = datetime.utcnow() - self.client.launch_time
         hours, remainder = divmod(int(delta_uptime.total_seconds()), 3600)
         minutes, seconds = divmod(remainder, 60)
         days, hours = divmod(hours, 24)
-        await ctx.respond(f"I have been online for {days} days, {hours} hours, {minutes} minutes")
+        await ctx.respond(f"I have been online for {days} days, {hours} hours, {minutes} minutes, and {seconds} sconds")
     
-    @slash_command(name='ping')
+    @slash_command(name='ping', guild_ids=[760302595808952352])
     @permissions.permission(user_id=DEV_ID, permission=True)
     async def ping(self, ctx):
         await ctx.respond(f'My ping to the Raspberry Pi is {round(self.client.latency *1000)} ms')
         
-    @slash_command(name='pi-temp')
+    @slash_command(name='pi-temp', guild_ids=[760302595808952352])
     @permissions.permission(user_id=DEV_ID, permission=True)
     async def tempurature(self, ctx):
         await ctx.respond(f'The Raspberry Pi is {await loop.run_in_executor(None, temperature_of_raspberry_pi)}')
         
-    @slash_command(name='restart')
+    @slash_command(name='restart', guild_ids=[760302595808952352])
     @permissions.permission(user_id=DEV_ID, permission=True)
     async def restart(self, ctx):
         await ctx.respond('Restarting...')
         await self.client.db.close()
         os.popen("sudo systemctl restart EndorCore_service").readline()
         
-    @slash_command(name='connect')
+    @slash_command(name='connect', guild_ids=[760302595808952352])
     @permissions.permission(user_id=DEV_ID, permission=True)
     async def connect(self, ctx):
-        self.client.db = await asqlite.connect("Databases/servers.db")
+        self.client.db = await asqlite.connect(self.client.db_filepath)
         await ctx.respond("Connected")
         
         
-    @slash_command(name='disconnect')
+    @slash_command(name='disconnect', guild_ids=[760302595808952352])
     @permissions.permission(user_id=DEV_ID, permission=True)
     async def disconnect(self, ctx):
         await self.client.db.close()
         await ctx.respond("Disconnected")
         
         
-    @slash_command(name='cogs')
+    @slash_command(name='cogs', guild_ids=[760302595808952352])
     @permissions.permission(user_id=DEV_ID, permission=True)
     async def cogs_check(self, ctx):
         cogs = []

@@ -15,19 +15,19 @@ for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
         
-@slash_command(name='load')
+@slash_command(name='load', guild_ids=[760302595808952352])
 @permissions.permission(user_id=client.dev, permission=True)
 async def load(ctx, extension):
     client.load_extension(f'cogs.{extension}')
     await ctx.message.channel.send(f"Loaded {extension}")
 
-@slash_command(name='unload')
+@slash_command(name='unload', guild_ids=[760302595808952352])
 @permissions.permission(user_id=client.dev, permission=True)
 async def unload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
     await ctx.message.channel.send(f"unloaded {extension}")
 
-@slash_command(name='reload')
+@slash_command(name='reload', guild_ids=[760302595808952352])
 @permissions.permission(user_id=client.dev, permission=True)
 async def reload(ctx, extension):
     client.reload_extension(f'cogs.{extension}')

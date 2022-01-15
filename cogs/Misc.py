@@ -3,8 +3,7 @@ import discord
 from mediawiki import MediaWiki
 from discord import File
 from discord.ext import commands
-from discord.ext.commands import BucketType, cooldown
-import asyncio
+from discord.commands import slash_command
 from typing import Optional
 
 
@@ -16,9 +15,7 @@ def wiki_summery(arg):
 
 
 class Misc(commands.Cog):
-    
     def __init__(self, client):
-        
         self.client = client 
         
     async def cog_check(self, ctx):
@@ -28,16 +25,11 @@ class Misc(commands.Cog):
         if result is None:
             return ctx.author.id
         
-    @commands.command(name= 'user')
+    @slash_command(name= 'user')
     async def user(self, ctx, member: Optional[discord.Member]):
-
             member = member or ctx.author
-
             myembed = discord.Embed(title="User information", colour=member.colour)
-
-
             myembed.set_thumbnail(url=member.avatar_url)
-
             myembed.add_field(name="Username", value=f"{member}")
             myembed.add_field(name="Joined Discord", value=f'''{member.created_at.strftime("%d/%m/%Y %H:%M:%S")}''', inline= True)
             myembed.add_field(name="Joined Server", value=f'''{member.joined_at.strftime("%d/%m/%Y %H:%M:%S")}''', inline= True)
@@ -46,95 +38,61 @@ class Misc(commands.Cog):
             myembed.add_field(name="Bot?", value=f"{member.bot}", inline= True)
             myembed.add_field(name="Current Status", value=f"{str(member.status).title()}", inline= True)
             myembed.add_field(name="Current Activity", value=f"{str(member.activity.type).split('.')[-1].title() if member.activity else 'N/A'} {member.activity.name if member.activity else ''}", inline= True)
-
-
-            await ctx.send(embed=myembed)
+            await ctx.respond(embed=myembed)
             
-            
-    @commands.command(name= 'server')
+    @slash_command(name= 'server')
     async def server(self, ctx):
-
         myembed = discord.Embed(title= f"{ctx.guild.name}", color= ctx.guild.owner.colour)
         myembed.set_thumbnail(url=f"{ctx.guild.icon_url}")
         myembed.add_field(name= "Region", value= f"{ctx.guild.region}")
         myembed.add_field(name= "Members", value= f"{ctx.guild.member_count}")
         myembed.add_field(name= "Server Owner", value= f"{ctx.guild.owner}", inline= False)
         myembed.set_footer(icon_url=f"{ctx.guild.icon_url}", text= f"Guild ID: {ctx.guild.id}")
-
-        await ctx.send(embed=myembed)
+        await ctx.respond(embed=myembed)
         
-        
-    @commands.command(name= 'wiki')
+    @slash_command(name= 'wiki')
     async def define(self, ctx, *, arg):
         wiki = await self.client.loop.run_in_executor(None, wiki_summery, arg)
         myembed = discord.Embed(title="According to Wikipedia", description=wiki, colour=discord.Colour.dark_blue())
-        await ctx.send(embed=myembed)
+        await ctx.respond(embed=myembed)
         
-    @commands.command(name='neko')
+    @slash_command(name='neko')
     async def img(self, ctx):
-
-
-        await ctx.send(file=File("mp4.gif"))
+        await ctx.respond(file=File("mp4.gif"))
         
-    @commands.command(name='shut-up')
+    @slash_command(name='shut-up')
     async def shutup(self, ctx):
+        await ctx.respond(":c")
         
-        
-        
-    
-        await ctx.message.channel.send(":c")
-        
-        
-    
-    @commands.command(name='hi')
+    @slash_command(name='hi')
     async def hi(self, ctx):
+        await ctx.respond("hi")
         
-        
-        
-        await ctx.send("hi")
-        
-        
-    @commands.command(name='gn')
+    @slash_command(name='gn')
     async def gn(self, ctx):
+        await ctx.respond("gn")
         
-        
-        
-        await ctx.message.channel.send("gn")
-        
-        
-    @commands.command(name='headpat')
+    @slash_command(name='headpat')
     async def headpat(self, ctx):
-        
         self.client.mood = 'happy'
-        
-        await ctx.message.channel.send("c:") 
+        await ctx.respond("c:") 
     
-    @commands.command(name='slap')
+    @slash_command(name='slap')
     async def slap(self, ctx):
-        
         self.client.mood = 'angry'
+        await ctx.respond(">:c") 
         
-        await ctx.message.channel.send(">:c") 
-        
-    @commands.command(name='gm')
+    @slash_command(name='gm')
     async def gm(self, ctx):
+        await ctx.respond("gm")
         
-        
-        
-        await ctx.message.channel.send("gm")
-        
-        
-    @commands.command(name='poll')
+    @slash_command(name='poll')
     async def poll(self, ctx, *, message):
-        
-        
-            
         myembed = discord.Embed(title= "Poll", description= f"{message}")
         await ctx.channel.purge(limit=1)
-        msg = await ctx.message.channel.send(embed=myembed)
+        msg = await ctx.respond(embed=myembed)
         await msg.add_reaction('👍')
         await msg.add_reaction('👎')  
-
         
 def setup(client):
     client.add_cog(Misc(client))
