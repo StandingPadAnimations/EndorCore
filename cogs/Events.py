@@ -1,7 +1,7 @@
 import discord 
 from discord.ext import commands
 import Moudles.asqlite as asqlite 
- 
+
 
 class Events(commands.Cog):
     
@@ -12,15 +12,10 @@ class Events(commands.Cog):
         
     @commands.Cog.listener()
     async def on_connect(self):
-        
         print("EndorCore is connected to Discord")
-        
-
-        
         
     @commands.Cog.listener()
     async def on_ready(self):
-        
         print("EndorCore is running")
         
 
@@ -31,9 +26,7 @@ class Events(commands.Cog):
         
     @commands.Cog.listener() 
     async def on_disconnect(self):
-        
         await self.client.db.close()
-        
         print("Disconected")
         
     

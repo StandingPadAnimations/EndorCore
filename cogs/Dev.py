@@ -9,8 +9,6 @@ import Moudles.asqlite as asqlite
 import asyncio
 
 DEV_ID = 668304274580701202
-def check_if_it_is_me(ctx):
-    return ctx.message.author.id == 668304274580701202 
 
 def temperature_of_raspberry_pi():
     cpu_temp = os.popen("vcgencmd measure_temp").readline()
@@ -22,7 +20,6 @@ loop = asyncio.get_event_loop()
 class Dev(commands.Cog):
     
     def __init__(self, client):
-        
         self.client = client 
     
     @slash_command(name='dev')
