@@ -13,6 +13,9 @@ class EndorCore(commands.Bot):
 
         with open(r"config.json") as f:
             data = json.load(f)
+            self.dev = data["STANDINGPAD"]
+            self.token = data["TOKEN"]
+            self.db_filepath = data["DATABASE"]
 
         self.mood = None
         self.revenge_mode = False 
@@ -23,9 +26,6 @@ class EndorCore(commands.Bot):
         self.restart = False 
         self.db = None 
         self.remove_command('help') 
-        self.dev = data["STANDINGPAD"]
-        self.token = data["TOKEN"]
-        self.db_filepath = data["DATABASE"]
 
         discord_intents = discord.Intents.default()  
         discord_intents.members = True 
