@@ -1,4 +1,4 @@
-import asqlite
+from . import asqlite
 
 def CheckConnection(Connection, filepath) -> None:
     try:
