@@ -1,5 +1,6 @@
 import discord 
 from discord.ext import commands
+import Moudles.Check as Check
 import random 
 
 
@@ -17,6 +18,7 @@ class Msg_Check(commands.Cog):
         bye = ["cya", "bye", "bai"]
         wholesome = ["https://tenor.com/view/birds-bird-roll-bird-cartoon-birdie-gif-4581058"]
         
+        Check.CheckConnection(self.client.db, self.client.db_filepath)
         if not isinstance(msg.channel, discord.DMChannel):
         
             msg_content = msg.content.strip().lower()

@@ -21,7 +21,7 @@ class Events(commands.Cog):
 
     async def initionalize(self):
         await self.client.wait_until_ready()
-        self.client.db = await asqlite.connect("servers.db")
+        self.client.db = await asqlite.connect(self.client.db_filepath)
         
         
     @commands.Cog.listener() 
@@ -29,17 +29,14 @@ class Events(commands.Cog):
         await self.client.db.close()
         print("Disconected")
         
-    
         
     @commands.Cog.listener()
     async def on_resumed(self):
-        self.client.db = await asqlite.connect("servers.db")
+        self.client.db = await asqlite.connect(self.client.db_filepath)
         print('Reconnected')
 
     @commands.Cog.listener()
     async def on_message_delete(self, msg):
-        
-        
         cursor = await self.client.db.cursor()
         await cursor.execute(f"SELECT ENABLE_OR_DISABLE_ON_MSG_DELETE FROM Servers WHERE Guild_ID = {msg.guild.id}")
         result = await cursor.fetchone()
