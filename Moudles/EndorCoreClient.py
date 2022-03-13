@@ -31,6 +31,7 @@ class EndorCore(commands.Bot):
         discord_intents.members = True 
         discord_intents.presences = True 
         discord_intents.messages = True 
+        discord_intents.message_content = True
         commands.Bot.__init__(self, command_prefix = ">", intents=discord_intents)
 
         self.Rand_Moods.start()

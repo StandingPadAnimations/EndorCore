@@ -19,7 +19,7 @@ class Mod(commands.Cog):
     
     
     @slash_command(name='kick')
-    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
+    @permissions.is_owner()
     async def kick(self, ctx, member: discord.Member, *, reason=None):
         if reason == None:
             reason = "For being a -----" 
@@ -53,7 +53,7 @@ class Mod(commands.Cog):
         
         
     @slash_command(name='ban')
-    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
+    @permissions.is_owner()
     async def ban(self, ctx, member, *, reason=None):
         if reason == None:
             reason = "For being a -----" 
@@ -101,7 +101,7 @@ class Mod(commands.Cog):
             await ctx.respond(embed=myembed)
         
     @slash_command(name='add-role')
-    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
+    @permissions.is_owner()
     async def role_add(self, ctx, member: discord.Member, role: discord.Role):
         
         if role > ctx.author.top_role:
@@ -117,7 +117,7 @@ class Mod(commands.Cog):
             await ctx.respond(embed=myembed)
 
     @slash_command(name='remove-role')
-    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
+    @permissions.is_owner()
     async def role_remove(self, ctx, member: discord.Member, role: discord.Role):
         
         if role > ctx.author.top_role:
@@ -133,7 +133,7 @@ class Mod(commands.Cog):
             await ctx.respond(embed=myembed)
         
     @slash_command(name='unban')
-    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
+    @permissions.is_owner()
     async def unban(self, ctx, *, member):
         member_user = discord.Object(id=member)
         try:
@@ -143,7 +143,7 @@ class Mod(commands.Cog):
             await ctx.respond(f"{member} does not exist!")
             
     @slash_command(name='bans')
-    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
+    @permissions.is_owner()
     async def bans_guild(self, ctx):
         ban_list = []
         async for entry in ctx.guild.audit_logs(action=discord.AuditLogAction.ban):
@@ -151,7 +151,7 @@ class Mod(commands.Cog):
         await ctx.respond("\n".join(ban_list))
         
     @slash_command(name='mute',)
-    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
+    @permissions.is_owner()
     async def mute(self, ctx, member: discord.Member):
 
         guild = ctx.guild 
@@ -171,7 +171,7 @@ class Mod(commands.Cog):
         
         
     @slash_command(name='unmute')
-    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
+    @permissions.is_owner()
     async def unmute(self, ctx, member: discord.Member):
         
         muted = discord.utils.get(ctx.guild.roles, name= "Muted")
@@ -185,7 +185,7 @@ class Mod(commands.Cog):
         
         
     @slash_command(name='purge')
-    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
+    @permissions.is_owner()
     async def purge(self, ctx, amount=1):
         await ctx.channel.purge(limit=amount + 1)
 
@@ -196,7 +196,7 @@ class Mod(commands.Cog):
         
         
     @slash_command(name='strike')
-    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
+    @permissions.is_owner()
     async def strike(self, ctx, member : discord.Member):
         
         first_strike = 1
@@ -241,7 +241,7 @@ class Mod(commands.Cog):
             
         
     @slash_command(name='pardon')
-    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
+    @permissions.is_owner()
     async def pardon(self, ctx, member : discord.Member, *, strikes : Optional[int]):
         
         if strikes == None:
@@ -270,7 +270,7 @@ class Mod(commands.Cog):
         
         
     @slash_command(name='infractions')
-    @permissions.has_any_role("EndorCoreMod", "Moderator", "Mod")
+    @permissions.is_owner()
     async def configset(self, ctx, member : discord.Member):
         
         cursor = await self.client.db.cursor()

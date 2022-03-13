@@ -1,13 +1,61 @@
+import asyncio
 import discord 
 from discord.ext import commands
 import Moudles.Check as Check
 import random 
+import datetime
 
 
 class Msg_Check(commands.Cog):
     def __init__(self, client):
         self.client = client 
-        
+        self.swear_user = []
+
+    async def ResetCount(self):
+        asyncio.sleep(60)
+        self.swear_user = []
+    
+    async def AddToList(self, user, channel):
+        self.swear_user.append(user.id)
+
+        if (self.swear_user.count(user.id) > 5):
+            await channel.send(f"Shut up {user.mention}. You'll be timed out for 5 minutes") 
+            duration = datetime.timedelta(minutes=5)
+            await user.timeout_for(duration);
+
+
+    @commands.Cog.listener('on_message_edit')
+    async def msg_edit(self, before_msg, after_msg):
+        filterwords = ["fuck", "shit", "bitch", "nigger", "nigga", "bitch"]
+        crazy_filterwords =  filterwords + ["sex", "pedo", "dick"]
+
+        Check.CheckConnection(self.client.db, self.client.db_filepath)
+        if not isinstance(after_msg.channel, discord.DMChannel):
+            msg_content = after_msg.content.strip().lower()
+            cursor = await self.client.db.cursor()
+            await cursor.execute(f"SELECT CHAT_FILTER_LEVEL FROM Servers WHERE Guild_ID = {after_msg.guild.id}")
+            result = await cursor.fetchone()
+            # Return if message is from bot or there's no chat filter
+            if after_msg.author.bot or result["CHAT_FILTER_LEVEL"] == 0:
+                return
+            
+            # basic level one chat filter
+            elif result["CHAT_FILTER_LEVEL"] == 1:
+                if any(word in msg_content for word in filterwords):
+                    await after_msg.delete()
+                    myembed = discord.Embed(title= "Filtered Word Detected", description= f'{after_msg.author}, do not use profanity')
+                    await after_msg.channel.send(embed=myembed) 
+                    await self.AddToList(after_msg.author, after_msg.channel)
+
+            # level 2 chat filter
+            elif result["CHAT_FILTER_LEVEL"] == 2:
+                if any(word in msg_content for word in filterwords):
+                    await after_msg.delete()
+                    myembed = discord.Embed(title= "Filtered Word Detected", description= f'{after_msg.author}, do not use profanity')
+                    await after_msg.channel.send(embed=myembed) 
+                    await self.AddToList(after_msg.author, after_msg.channel)
+
+
     @commands.Cog.listener('on_message')
     async def msg(self, msg):
         filterwords = ["fuck", "shit", "bitch", "nigger", "nigga", "bitch"]
@@ -20,7 +68,6 @@ class Msg_Check(commands.Cog):
         
         Check.CheckConnection(self.client.db, self.client.db_filepath)
         if not isinstance(msg.channel, discord.DMChannel):
-        
             msg_content = msg.content.strip().lower()
             cursor = await self.client.db.cursor()
             await cursor.execute(f"SELECT CHAT_FILTER_LEVEL FROM Servers WHERE Guild_ID = {msg.guild.id}")
@@ -32,19 +79,19 @@ class Msg_Check(commands.Cog):
             
             # basic level one chat filter
             elif result["CHAT_FILTER_LEVEL"] == 1:
-                for word in filterwords: 
-                    if word in msg_content:
-                        await msg.delete()
-                        myembed = discord.Embed(title= "Filtered Word Detected", description= f'{msg.author}, do not use profanity')
-                        await msg.channel.send(embed=myembed) 
+                if any(word in msg_content for word in filterwords):
+                    await msg.delete()
+                    myembed = discord.Embed(title= "Filtered Word Detected", description= f'{msg.author}, do not use profanity')
+                    await msg.channel.send(embed=myembed) 
+                    await self.AddToList(msg.author, msg.channel)
 
             # level 2 chat filter
-            elif result["CHAT_FILTER_LEVEL"] == 1:
-                for word in crazy_filterwords: 
-                    if word in msg_content:
-                        await msg.delete()
-                        myembed = discord.Embed(title= "Filtered Word Detected", description= f'{msg.author}, do not use profanity')
-                        await msg.channel.send(embed=myembed)
+            elif result["CHAT_FILTER_LEVEL"] == 2:
+                if any(word in msg_content for word in filterwords):
+                    await msg.delete()
+                    myembed = discord.Embed(title= "Filtered Word Detected", description= f'{msg.author}, do not use profanity')
+                    await msg.channel.send(embed=myembed) 
+                    await self.AddToList(msg.author, msg.channel)
 
             # pinging me cause I hate being pinged >>:CCCC      
             elif msg_content == "@StandingPad":
@@ -147,8 +194,6 @@ class Msg_Check(commands.Cog):
                     else:
                         myembed = discord.Embed(title= "Petty Revenge", description= f'{msg.author}, remember to be nice to programmers')
                         await msg.channel.send(embed=myembed) 
-    
-        
         
 def setup(client):
     client.add_cog(Msg_Check(client))
