@@ -16,6 +16,9 @@ class Events(commands.Cog):
         
     @commands.Cog.listener()
     async def on_ready(self):
+        for guild in self.client.guilds:
+            if guild.system_channel: # If it is not None
+                await guild.system_channel.send("EndorCore is shutting down on Feburary 11th, see here for more details: https://standingpadanimations.github.io/posts/endorcore-shutdown/")
         print("EndorCore is running")
         
 
